@@ -1,14 +1,17 @@
 import Converter from '../converter';
-import Mocks from '../mocks';
+import Mocks from "../mocks";
 
-test('Converter converts source to target value', () => {
+describe('Converter', () => {
   const conversionTable = Mocks.currenciesTable;
-  const wjsConverter = new Converter(conversionTable);
-  expect(wjsConverter.convert('usd', 'pln', 100)).toBe('359.00');
-  expect(wjsConverter.convert('pln', 'usd', 1)).toBe('0.28');
-  expect(wjsConverter.convert('gbp', 'pln', 100)).toBe('462.00');
-  expect(wjsConverter.convert('pln', 'chf', 100)).toBe('27.00');
-  expect(wjsConverter.convert('eur', 'gbp', 1)).toBe('0.92');
-  expect(wjsConverter.convert('eur', 'eur', 1)).toBe('1.00');
-  expect(wjsConverter.convert('eur', 'yen', 10)).toBeNull();
+  const rateList = document.querySelector('section.rate ul');
+
+  const wjsConverter = new Converter(conversionTable, rateList);
+
+  test('converts source to target', () => {
+    expect(wjsConverter.convert('pln', 'usd', 100)).toBe("359.00");
+    expect(wjsConverter.convert('PLN', 'USD', 100)).toBe("359.00");
+    expect(wjsConverter.convert('pln', 'pln', "100.00")).toBe("100.00");
+    expect(wjsConverter.convert('pln', 'yen', "100.00")).toBeNull();
+    expect(wjsConverter.convert('yen', 'usd', 100.00)).toBeNull();
+  });
 });

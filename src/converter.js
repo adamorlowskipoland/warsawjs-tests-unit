@@ -1,17 +1,40 @@
-import utilities from './utilities'
-
 class Converter {
-  constructor(conversionTable) {
+  constructor(conversionTable, rateList) {
     this.conversionTable = conversionTable;
-    console.log('🐟 fish');
+    this.rateList = rateList;
+    console.log(':squid: hello! ');
   }
-  convert(sourceCurrency, targetCurrency, value) {
-    if (!this.conversionTable[targetCurrency] || !this.conversionTable[sourceCurrency]) {
+
+  convert(targetCurrency, sourceCurrency, value) {
+    sourceCurrency = sourceCurrency.toLowerCase();
+    targetCurrency = targetCurrency.toLowerCase();
+    if(!this.conversionTable[targetCurrency] || !this.conversionTable[sourceCurrency]) {
       return null;
     }
-    const rate = sourceCurrency === targetCurrency ? 1 : this.conversionTable[targetCurrency][sourceCurrency];
-    return utilities.toCurr(rate * value);
+    const rate = targetCurrency === sourceCurrency ?
+      1 :
+      this.conversionTable[targetCurrency][sourceCurrency];
+    return (rate * value).toFixed(2);
   }
-}
+
+  generateConvertTable(currentRateContainer, inputCurrency) {
+    currentRateContainer.innerText = inputCurrency.value;
+    this.rateList.innerHTML = null;
+    Object.keys(this.conversionTable[inputCurrency.value.toLowerCase()]).map(currencyName => {
+      const listElement = document.createElement('li');
+      const currencyNameContainer = document.createElement('span');
+      const currencyRate = document.createElement('span');
+
+      currencyNameContainer.innerText = currencyName;
+      currencyRate.innerText = this.conversionTable[inputCurrency.value.toLowerCase()][currencyName];
+
+
+      listElement.appendChild(currencyNameContainer);
+      listElement.appendChild(currencyRate);
+
+      this.rateList.appendChild(listElement);
+    });
+  }
+};
 
 export default Converter;
